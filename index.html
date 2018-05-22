@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  	<meta charset="UTF-8">
+ 	<title>Globuzzer - shopping cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" >
+  		<link rel="stylesheet prefetch" 
+        	href="https://fonts.googleapis.com/css?family=Kaushan+Script|Roboto:100,300,400,700,800">
+  		<link href="style.css" rel="stylesheet" type="text/css" />
+  		<link rel="stylesheet" 
+        	href="https://raw.githubusercontent.com/ThisIsDallas/Simple-Grid/master/simplegrid.css">
+ 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+        
+        <!---- files for cart---> 
+       		 <link rel='stylesheet prefetch' 
+             	href='https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css'>
+			<link rel='stylesheet prefetch' 
+            	href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css'>
+		<!---- files for cart--->
+        
+         
+
+</head>
+
+<body>
+
+  <header>
+    <div>
+     <span class="u-pull-left"> <img src="Logo_frii.png" width="20%" height="20%" alt="image"/> </span> 
+    <span>GLOBUZZER<span>
+    <span class="u-pull-right"><a href="#menu" id="toggle"><span></span></a>
+  			<nav role="main" id="menu">
+   			 <ul>
+     			 <li><a href="#">Products</a></li>
+      			 <li><a href="#">Read more</a></li>
+      			 <li><a href="#">Partners</a></li>
+     		</ul>
+  			</nav> </div>
+   		</span>   
+  </header>
+  
+  <div id="app">
+  
+  	 <div v-show="!verified">
+    	 <div class="u-pull-right">
+     	   <i class="fa fa-shopping-cart fa-2x"  @click="showCart = !showCart" v-show="!verified">
+           
+         		 {{ items.length + (items.length > 1 || items.length === 0 ? " items" : " item") }}
+      	   </i>
+   		 </div>
+  	 </div>
+  <div class="u-pull-right">
+  	 <div class="cart" v-show="showCart" >
+   	   <div v-show="items.length > 0">
+     	 <ul>
+      	    <li v-for="item in items" transition="fade">
+         		 <strong>Name: {{ item.name }}</strong>
+                         <p>Quantity: {{ item.quantity }}</p>
+                 		<span>Price: ${{ item.price * item.quantity }} + Shipping</span> 
+                 <i class="fa fa-trash fa-lg" @click="removeFromCart(item)"></i>
+                 
+        	</li>
+      	</ul>
+    		 <div class="shop"><button @click="verified = true, showCart = false">Check out</button></div>
+    </div>
+   
+   		 <div v-show="items.length === 0">
+     		 <p>Your cart is empty!</p>
+   		 </div>
+  	</div>
+  </div>
+  <br>
+  			<div  v-show="!verified">
+					<iframe width="560" height="315" 
+                        src="https://www.youtube.com/embed/nye4eAjtwT0" 		
+                          frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+                    </iframe>
+			</div>
+  	
+   <div class="container">
+   			
+   		<div class="shop" v-show="!verified">
+     			 <ul style="list-style-type:none">
+      				  <li v-for="item in shop">
+          				<div>
+            				<h5>Product Name: {{ item.name }}</h5>
+           					 <p>Product Price: ${{ item.price }}</p>
+            				<p>Description: {{ item.description }}</p>
+                            <img :src="item.image" width="150px" height="150px" alt="image"/>
+           					 <button @click="addToCart(item)">Add to cart</button>
+          				</div>
+        			</li>
+      			</ul>
+    	</div>
+        
+         <!---- start your cart--->
+         <div class="container">
+ 			 <div class="grid grid-pad">
+             
+    				 <div class="checkout" v-show="verified">
+      						<p>Your Cart</p>
+            				<hr>
+                      <form  method="post" action="paypal.php"  id="paypalform">
+						 <span v-for="item in items">
+                 		 <strong>Name: {{ item.name }}</strong>
+                       	 <img name="image" :src="item.image" width="150px" height="150px" alt="image"/>
+                         <p>Quantity: {{ item.quantity }}</p>
+                 		<span>Price: ${{ item.price * item.quantity }} + Shipping</span>
+	    			   </span>
+                     <div class="row">
+      		  			<div class="u-pull-right">
+         					 <h5>Total: <span>{{ total | currency }}</span></h5>
+                               <select name="pname">
+ 								 <option value="TRILENS">TRILENS</option>
+								</select>
+                                
+             	  		</div>
+      				 </div>
+                     			 
+              						<div class="shop">
+                  				   <button name="totalprice" value="{{ total }}">Pay with paypal
+                                   	</button>
+                                    </div>
+         					 
+                     </form>
+                  
+  	  			 </div>
+                 
+                 
+                 
+                 
+              
+               
+              	<div class="backg card" v-show="verified">
+    						
+
+    <div class="row">
+      <div class="col-4 input-field">
+      <label for="cust_name">Card Holder Name</label>
+        <input id="cust_name" type="text" class="validate">
+        
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-4 input-field">
+      <label for="cust_card_number">Card Number</label>
+        <input id="cust_card_number" type="text" class="validate">
+        
+      </div>
+      <div class="col-3 input-field">
+      <label for="cust_ccv_number">CCV Number</label>
+        <input id="cust_ccv_number" type="text" class="validate">
+        
+      </div>
+      <div class="col-4 input-field">
+        <label for="datepicker">Card Expiration</label>
+        <input placeholder="Expiration Date" type="date" class="datepicker">
+      </div>
+    </div>
+  </div>
+              
+
+			</div>
+		</div>
+       				 
+       <!---- end your cart---> 
+        
+     </div>
+</div>
+
+
+  
+  	
+   
+   	
+        
+   <footer>
+    
+	</footer>
+    <script  src="index.js"></script>
+  		 <!-- files for cart -->
+   	 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+     <script src="indexcart.js"></script>
+  		 <!-- end files for cart --> 
+</body>
+
+</html>
